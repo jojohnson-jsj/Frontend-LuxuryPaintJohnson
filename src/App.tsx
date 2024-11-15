@@ -1,9 +1,10 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import BusinessOverview from './components/BusinessOverview';
-import ContactInfo from './components/ContactInfo';
-import CallToAction from './components/CallToAction';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Layout } from "antd";
+import BusinessOverview from "./components/BusinessOverview";
+import ContactInfo from "./components/ContactInfo";
+import CallToAction from "./components/CallToAction";
+import GalleryPage from "./components/GalleryPage";
 import { createGlobalStyle } from 'styled-components';
 import 'antd/dist/reset.css';
 
@@ -39,6 +40,7 @@ const App: React.FC = () => {
                 </>
               }
             />
+            <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/admin" element={<h1>Admin Login</h1>} />
           </Routes>
         </Content>
