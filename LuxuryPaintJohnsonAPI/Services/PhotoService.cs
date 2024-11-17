@@ -11,6 +11,7 @@ public class PhotoService : IPhotoService
 	{
 		this.photoRepository = photoRepository;
 	}
+
 	public async Task<IEnumerable<Photo>> GetPhotosAsync()
 	{
 		return await this.photoRepository.GetPhotosAsync();

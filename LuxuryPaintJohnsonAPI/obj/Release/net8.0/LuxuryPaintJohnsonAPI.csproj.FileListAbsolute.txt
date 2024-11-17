@@ -175,3 +175,5 @@ B:\git\LuxuryPaintJohnson\LuxuryPaintJohnsonAPI\obj\Release\net8.0\LuxuryPaintJo
 B:\git\LuxuryPaintJohnson\LuxuryPaintJohnsonAPI\obj\Release\net8.0\LuxuryPaintJohnsonAPI.genruntimeconfig.cache
 B:\git\LuxuryPaintJohnson\LuxuryPaintJohnsonAPI\obj\Release\net8.0\ref\LuxuryPaintJohnsonAPI.dll
 B:\git\LuxuryPaintJohnson\LuxuryPaintJohnsonAPI\bin\Release\net8.0\web.config
+B:\git\LuxuryPaintJohnson\LuxuryPaintJohnsonAPI\bin\Release\net8.0\AutoMapper.dll
+B:\git\LuxuryPaintJohnson\LuxuryPaintJohnsonAPI\bin\Release\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll

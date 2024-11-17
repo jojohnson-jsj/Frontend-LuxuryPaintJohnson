@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 using LuxuryPaintJohnsonAPI.Models;
+using LuxuryPaintJohnsonAPI.Models.Dtos;
 using LuxuryPaintJohnsonAPI.Services;
 
 namespace LuxuryPaintJohnsonAPI.Controllers;
@@ -9,10 +11,12 @@ namespace LuxuryPaintJohnsonAPI.Controllers;
 public class PhotosController : ControllerBase
 {
 	private readonly IPhotoService photoService;
+	private readonly IMapper mapper;
 
-	public PhotosController(IPhotoService photoService)
+	public PhotosController(IPhotoService photoService, IMapper mapper)
 	{
 		this.photoService = photoService;
+		this.mapper = mapper;
 	}
 
 	[HttpGet]
@@ -30,12 +34,12 @@ public class PhotosController : ControllerBase
 			.Take(pageSize)
 			.ToList();
 
-		var totalPhotos = photos.Count();
+		var paginatedPhotosDto = this.mapper.Map<IEnumerable<PhotoDto>>(paginatedPhotos);
 
 		return Ok(new
 		{
-			Data = paginatedPhotos,
-			TotalCount = totalPhotos,
+			Data = paginatedPhotosDto,
+			TotalCount = photos.Count(),
 			Page = page,
 			PageSize = pageSize
 		});
@@ -48,36 +52,60 @@ public class PhotosController : ControllerBase
 
 		if (photo is null)
 		{
-			return NotFound();
+			return NotFound($"Photo with ID {id} not found.");
 		}
 
-		return Ok(photo);
+		var photoDto = this.mapper.Map<PhotoDto>(photo);
+		return Ok(photoDto);
 	}
 
 	[HttpPost]
-	public async Task<IActionResult> AddPhoto([FromBody] Photo photo)
+	public async Task<IActionResult> AddPhoto([FromBody] PhotoDto photoDto)
 	{
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState);
+		}
+
+		var photo = this.mapper.Map<Photo>(photoDto);
 		var createdPhoto = await this.photoService.AddPhotoAsync(photo);
 
-		return CreatedAtAction(nameof(GetPhoto), new { id = createdPhoto.Id }, createdPhoto);
+		var createdPhotoDto = this.mapper.Map<PhotoDto>(createdPhoto);
+
+		return CreatedAtAction(nameof(GetPhoto), new { id = createdPhotoDto.Id }, createdPhotoDto);
 	}
 
 	[HttpPut("{id}")]
-	public async Task<IActionResult> UpdatePhoto(int id, [FromBody] Photo photo)
+	public async Task<IActionResult> UpdatePhoto(int id, [FromBody] PhotoDto photoDto)
 	{
-		if (id != photo.Id)
+		if (id != photoDto.Id || !ModelState.IsValid)
 		{
 			return BadRequest();
 		}
 
+		var existingPhoto = await this.photoService.GetPhotoByIdAsync(id);
+		if (existingPhoto is null)
+		{
+			return NotFound($"Photo with ID {id} not found.");
+		}
+
+		var photo = this.mapper.Map<Photo>(photoDto);
 		var updatedPhoto = await this.photoService.UpdatePhotoAsync(photo);
 
-		return Ok(updatedPhoto);
+		var updatedPhotoDto = this.mapper.Map<PhotoDto>(updatedPhoto);
+
+		return Ok(updatedPhotoDto);
 	}
 
 	[HttpDelete("{id}")]
 	public async Task<IActionResult> DeletePhoto(int id)
 	{
+		var existingPhoto = await this.photoService.GetPhotoByIdAsync(id);
+		if (existingPhoto is null)
+		{
+			return NotFound($"Photo with ID {id} not found.");
+		}
+
 		await this.photoService.DeletePhotoAsync(id);
 
 		return NoContent();
