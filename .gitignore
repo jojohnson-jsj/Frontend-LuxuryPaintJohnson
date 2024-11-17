@@ -1,3 +1,7 @@
+# Build artifacts
+bin/
+obj/
+
 # Logs
 logs
 *.log
@@ -10,10 +14,13 @@ pnpm-debug.log*
 lerna-debug.log*
 Thumbs.db
 
+# Node.js dependencies and distribution files
 node_modules
 node_modules/
 dist
 dist-ssr
+
+# Local environment-specific files
 *.local
 
 # Editor directories and files
@@ -31,6 +38,5 @@ dist-ssr
 *.userosscache
 *.sln.docstates
 
-# Build artifacts
-bin/
-obj/
+# Publish output
+publish/
