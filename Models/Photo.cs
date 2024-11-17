@@ -7,4 +7,7 @@ public class Photo
 	public string? Url { get; set; }
 	public string? Description { get; set; }
 	public DateTime CreatedAt {  get; set; }
+
+	public int ProjectId { get; set; }
+	public virtual Project Project { get; set; } = null!;
 }
