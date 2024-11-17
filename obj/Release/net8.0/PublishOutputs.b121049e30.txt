@@ -5,6 +5,8 @@ B:\git\LuxuryPaintJohnson\LuxuryPaintJohnsonAPI\obj\Release\net8.0\PubTmp\Out\ap
 B:\git\LuxuryPaintJohnson\LuxuryPaintJohnsonAPI\obj\Release\net8.0\PubTmp\Out\LuxuryPaintJohnsonAPI.dll
 B:\git\LuxuryPaintJohnson\LuxuryPaintJohnsonAPI\obj\Release\net8.0\PubTmp\Out\LuxuryPaintJohnsonAPI.runtimeconfig.json
 B:\git\LuxuryPaintJohnson\LuxuryPaintJohnsonAPI\obj\Release\net8.0\PubTmp\Out\LuxuryPaintJohnsonAPI.pdb
+B:\git\LuxuryPaintJohnson\LuxuryPaintJohnsonAPI\obj\Release\net8.0\PubTmp\Out\AutoMapper.dll
+B:\git\LuxuryPaintJohnson\LuxuryPaintJohnsonAPI\obj\Release\net8.0\PubTmp\Out\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 B:\git\LuxuryPaintJohnson\LuxuryPaintJohnsonAPI\obj\Release\net8.0\PubTmp\Out\Azure.Core.dll
 B:\git\LuxuryPaintJohnson\LuxuryPaintJohnsonAPI\obj\Release\net8.0\PubTmp\Out\Azure.Identity.dll
 B:\git\LuxuryPaintJohnson\LuxuryPaintJohnsonAPI\obj\Release\net8.0\PubTmp\Out\Azure.Storage.Blobs.dll

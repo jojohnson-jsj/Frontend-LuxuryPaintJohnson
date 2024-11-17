@@ -6,7 +6,18 @@
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -67,6 +78,48 @@
     "Method": "DeletePhoto",
     "RelativePath": "api/Photos/{id}",
     "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "LuxuryPaintJohnsonAPI.Controllers.PhotosController",
+    "Method": "GetProjects",
+    "RelativePath": "api/Photos/projects",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "LuxuryPaintJohnsonAPI.Controllers.PhotosController",
+    "Method": "GetProject",
+    "RelativePath": "api/Photos/projects/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "LuxuryPaintJohnsonAPI.Controllers.PhotosController",
+    "Method": "GetPhotosForProject",
+    "RelativePath": "api/Photos/projects/{id}/photos",
+    "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [

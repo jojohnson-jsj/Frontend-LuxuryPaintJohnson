@@ -20,6 +20,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Dependency Injection
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 builder.Services.AddScoped<IPhotoRepository, PhotoRepository>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+
+// Register AutoMapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // Add services to the container
 builder.Services.AddControllers();
