@@ -16,11 +16,29 @@ public class PhotosController : ControllerBase
 	}
 
 	[HttpGet]
-	public async Task<IActionResult> GetPhotos()
+	public async Task<IActionResult> GetPhotos([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
 	{
+		if (page <= 0 || pageSize <= 0)
+		{
+			return BadRequest("Page and pageSize must be greater than zero.");
+		}
+
 		var photos = await this.photoService.GetPhotosAsync();
 
-		return Ok(photos);
+		var paginatedPhotos = photos
+			.Skip((page - 1) * pageSize)
+			.Take(pageSize)
+			.ToList();
+
+		var totalPhotos = photos.Count();
+
+		return Ok(new
+		{
+			Data = paginatedPhotos,
+			TotalCount = totalPhotos,
+			Page = page,
+			PageSize = pageSize
+		});
 	}
 
 	[HttpGet("{id}")]
