@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LuxuryPaintJohnsonAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6897c765d31ba682aa3d4bf74048f217271cee9b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4e0dd6dd3cd2b30144ac48f75cc4c19a7d0c2e53")]
 [assembly: System.Reflection.AssemblyProductAttribute("LuxuryPaintJohnsonAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LuxuryPaintJohnsonAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

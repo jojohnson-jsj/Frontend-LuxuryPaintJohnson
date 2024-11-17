@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Typography, Row, Col, Card } from "antd";
+import { Typography, Row, Col, Card, Spin, Alert } from "antd";
+import { fetchPhotos } from "../services/photoServices";
 
 const { Title } = Typography;
 
@@ -8,13 +9,50 @@ const Section = styled.section`
     padding: 40px;
 `;
 
+interface Photo {
+    id: number;
+    title: string;
+    url: string;
+    description: string;
+}
+
 const GalleryPage: React.FC = () => {
-    const placeholderPhotos = [
-        { id: 1, title: "Job 1", imageUrl: "https://via.placeholder.com/300" },
-        { id: 2, title: "Job 2", imageUrl: "https://via.placeholder.com/300" },
-        { id: 3, title: "Job 3", imageUrl: "https://via.placeholder.com/300" },
-        { id: 4, title: "Job 4", imageUrl: "https://via.placeholder.com/300" },
-    ];
+    const [photos, setPhotos] = useState<Photo[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const loadPhotos = async () => {
+            try {
+                const data = await fetchPhotos();
+                setPhotos(data);
+            } catch (err: any) {
+                setError(err.message || "An error occurred");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadPhotos();
+    }, []);
+
+    if (loading) {
+        return (
+            <Section>
+                <Spin size="large" tip="Loading photos...">
+                    <div style={{ height: "100px" }} />
+                </Spin>
+            </Section>
+        );
+    }
+
+    if (error) {
+        return (
+            <Section>
+                <Alert message="Error" description={error} type="error" showIcon />
+            </Section>
+        );
+    }
 
     return (
         <Section>
@@ -22,19 +60,19 @@ const GalleryPage: React.FC = () => {
                 Completed Projects
             </Title>
             <Row gutter={[16, 16]} justify="center">
-                {placeholderPhotos.map((photo) => (
+                {photos.map((photo) => (
                     <Col xs={24} sm={12} md={8} lg={6} key={photo.id}>
                         <Card
                             hoverable
-                            cover={<img alt={photo.title} src={photo.imageUrl} />}
+                            cover={<img alt={photo.title} src={photo.url} />}
                         >
-                            <Card.Meta title={photo.title} />
+                            <Card.Meta title={photo.title} description={photo.description} />
                         </Card>
                     </Col>
                 ))}
             </Row>
         </Section>
-    );
+    )
 };
 
 export default GalleryPage;
