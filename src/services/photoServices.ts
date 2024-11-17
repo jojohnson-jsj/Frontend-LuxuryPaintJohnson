@@ -9,16 +9,18 @@ const apiClient = axios.create
     },
 });
 
-export const fetchPhotos = async () => 
+export const fetchPhotos = async (page = 1, pageSize = 10) => 
 {
-    try 
-    {
-        const response = await apiClient.get("/photos");
+    try {
+        const response = await apiClient.get(`/photos`, {
+            params: { page, pageSize },
+        });
         
-        return response.data;
-    } 
-    catch (error: any) 
-    {
+        return{
+            photos: response.data.data,
+            totalCount: response.data.totalCount, 
+        }
+    } catch (error: any) {
         console.error("Error fetching photos:", error.message);
 
         throw error;
