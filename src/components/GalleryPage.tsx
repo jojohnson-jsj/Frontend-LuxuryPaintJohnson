@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Typography, Row, Col, Card, Spin, Alert, Pagination, Modal, Carousel } from "antd";
-import { fetchPhotos } from "../services/photoServices";
+import { Typography, Row, Col, Card, Spin, Alert, Pagination } from "antd";
+import { fetchProjects, fetchPhotosForProject } from "../services/projectServices";
+import SpotlightCarousel from "./SpotlightCarousel";
+import ProjectCard from "./ProjectCard";
 
 const { Title } = Typography;
 
@@ -14,75 +16,37 @@ interface Photo {
     title: string;
     url: string;
     description: string;
+    createdAt: string;
+    projectId: number;
 }
 
-const GalleryModal: React.FC<{
-    visible: boolean;
-    onClose: () => void;
-    images: Photo[];
-}> = ({ visible, onClose, images }) => {
-    return (
-        <Modal
-            visible={visible}
-            onCancel={onClose}
-            footer={null}
-            centered
-            width="100%"
-            bodyStyle={{ padding: 0 }}
-        >
-            <Carousel
-                arrows
-                dotPosition="bottom"
-                style={{ height: "90vh", backgroundColor: "black" }}
-            >
-                {images.map((image) => (
-                    <div key={image.id} style={{ textAlign: "center" }}>
-                        <img
-                            src={image.url}
-                            alt={image.title}
-                            style={{
-                                maxHeight: "90vh",
-                                maxWidth: "100%",
-                                margin: "auto",
-                                objectFit: "contain",
-                            }}
-                        />
-                    </div>
-                ))}
-            </Carousel>
-        </Modal>
-    );
-};
+interface Project {
+    id: number;
+    title: string;
+    createdAt: string;
+    photos: Photo[];
+}
+
 
 const GalleryPage: React.FC = () => {
-    const [photos, setPhotos] = useState<Photo[]>([]);
+    const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
-    const [totalPhotos, setTotalPhotos] = useState(0);
-    
-    const [isGalleryOpen, setIsGalleryOpen] = useState(false);
-    const [currentProjectId, setCurrentProjectId] = useState<number | null>(null);
+    const [totalProjects, setTotalProjects] = useState(0);
+    const [selectedProjectPhotos, setSelectedProjectPhotos] = useState([]);
+    const [isSpotlightOpen, setIsSpotlightOpen] = useState(false);
 
-    const openGallery = (projectId: number) => {
-        setIsGalleryOpen(true);
-        setCurrentProjectId(projectId);
-    };
-
-    const closerGallery = () => {
-        setIsGalleryOpen(false);
-        setCurrentProjectId(null);
-    };
-
-    const loadPhotos = async (page: number, pageSize: number) => {
+    const loadProjects = async (page: number, pageSize: number) => {
         setLoading(true);
         setError(null);
 
         try {
-            const { photos, totalCount } = await fetchPhotos(page, pageSize);
-            setPhotos(photos);
-            setTotalPhotos(totalCount);
+            const response = await fetchProjects(page, pageSize);
+            console.log("API Response:", response.data);
+            setProjects(response.data);
+            setTotalProjects(response.totalCount);
         } catch (err: any) {
             setError(err.message || "An error occurred");
         } finally {
@@ -91,16 +55,23 @@ const GalleryPage: React.FC = () => {
     };
 
     useEffect(() => {
-        loadPhotos(currentPage, pageSize);
+        loadProjects(currentPage, pageSize);
     }, [currentPage, pageSize]);
 
-    const handlePageChange = (page: number, pageSize?: number) => {
-        setCurrentPage(page);
-        
-        if (pageSize) setPageSize(pageSize);
+    const openSpotlight = async (projectId: number) => {
+        try {
+            const photos = await fetchPhotosForProject(projectId);
+            setSelectedProjectPhotos(photos);
+            setIsSpotlightOpen(true);
+        } catch (err: any) {
+            console.error("Failed to fetch photos for project:", err.message);
+        }
     };
 
-    const selectedProjectImages = photos.filter((photo) => photo.id === currentProjectId);
+    const closeSpotlight = () => {
+        setIsSpotlightOpen(false);
+        setSelectedProjectPhotos([]);
+    }
 
     if (loading) {
         return (
@@ -123,44 +94,41 @@ const GalleryPage: React.FC = () => {
     return (
         <Section>
             <Title level={2} style={{ textAlign: "center", marginBottom: "40px" }}>
-                Completed Projects
+                Previous Work
             </Title>
             <Row gutter={[16, 16]} align="top" justify="start">
-                {(photos || []).map((photo) => (
-                    <Col xs={24} sm={12} md={8} lg={6} key={photo.id}>
-                        <Card
-                            hoverable
-                            style={{
-                                overflow: "hidden",
-                                borderRadius: "8px",
-                            }}
-                            cover={
-                                <img
-                                    alt={photo.title}
-                                    src={photo.url}
-                                    style={{
-                                        width: "100%",
-                                        height: "200px",
-                                        objectFit: "cover",
-                                    }}
-                                />
-                            }
-                            onClick={() => openGallery(photo.id)}
-                        />
-                    </Col>
-                ))}
+                {projects && projects.length > 0 ? (
+                    projects.map((project) => (
+                        <Col xs={24} sm={12} md={8} lg={6} key={project.id}>
+                            <ProjectCard
+                                project={project}
+                                onClick={() => openSpotlight(project.id)}
+                            />
+                        </Col>
+                    ))
+                ) : (
+                    <p>No projects found.</p>
+                )}
             </Row>
             <Pagination
                 style={{ marginTop: "20px", textAlign: "center" }}
                 current={currentPage}
                 pageSize={pageSize}
-                total={totalPhotos}
+                total={totalProjects}
                 showSizeChanger
-                onChange={handlePageChange}
+                onChange={(page, pageSize) => {
+                    setCurrentPage(page);
+                    setPageSize(pageSize);
+                  }}
             />
-            <GalleryModal visible={isGalleryOpen} onClose={closerGallery} images={selectedProjectImages} />
+            {isSpotlightOpen && (
+                <SpotlightCarousel
+                    photos={selectedProjectPhotos}
+                    onClose={closeSpotlight}
+                />
+            )}
         </Section>
-    )
+    );
 };
 
 export default GalleryPage;

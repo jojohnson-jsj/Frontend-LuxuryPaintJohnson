@@ -22,13 +22,15 @@ public class ProjectRepository : IProjectRepository
 
 	public async Task<Project> GetProjectByIdAsync(int id)
 	{
-		return await this.context.Projects.FindAsync(id) ?? new Project
-		{
-			Id = 0,
-			Title = "Default Project",
-			Photos = new List<Photo>(),
-			CreatedAt = DateTime.MinValue
-		};
+		return await this.context.Projects
+			.Include(p => p.Photos) // Eagerly load related Photos
+			.FirstOrDefaultAsync(p => p.Id == id) ?? new Project
+			{
+				Id = 0,
+				Title = "Default Project",
+				Photos = new List<Photo>(),
+				CreatedAt = DateTime.MinValue
+			};
 	}
 
 	public async Task<Project> AddProjectAsync(Project project)
