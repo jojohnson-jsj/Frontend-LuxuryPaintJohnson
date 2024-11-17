@@ -6,16 +6,14 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Use DefaultAzureCredential for Azure AD Authentication
 var azureCredential = new DefaultAzureCredential();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
 	var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
 	options.UseSqlServer(connectionString, sqlOptions =>
 	{
-		sqlOptions.EnableRetryOnFailure(); // Retry on transient failures
+		sqlOptions.EnableRetryOnFailure();
 	});
 });
 
@@ -25,18 +23,35 @@ builder.Services.AddScoped<IPhotoRepository, PhotoRepository>();
 
 // Add services to the container
 builder.Services.AddControllers();
+
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy("AllowSpecificOrigins", policy =>
+	{
+		policy.WithOrigins("http://localhost:5173")
+			  .AllowAnyHeader()
+			  .AllowAnyMethod();
+	});
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
 	app.UseSwagger();
-	app.UseSwaggerUI();
+	app.UseSwaggerUI(c =>
+	{
+		c.SwaggerEndpoint("/swagger/v1/swagger.json", "LuxuryPaintJohnsonAPI V1");
+		c.RoutePrefix = string.Empty;
+	});
 }
 
+app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
